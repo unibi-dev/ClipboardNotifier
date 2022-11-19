@@ -1,6 +1,6 @@
 # ClipboardNotifier
 
-Notifies your copied contents to the clipboard on your display.
+Notifies your copied contents to the clipboard on your display.  
 JP: クリップボードにコピーした内容をディスプレイ上に表示するアプリです。
 
 ![Overview](doc/ClipboardNotifier.gif)
