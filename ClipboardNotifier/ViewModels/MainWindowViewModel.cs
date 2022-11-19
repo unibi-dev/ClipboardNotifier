@@ -26,6 +26,9 @@ namespace ClipboardNotifier.ViewModels
     /// </summary>
     public class MainWindowViewModel : BindableBase
     {
+        private const int TextLengthMax = 500;
+        private const float DisplaySeconds = 6.0f;
+
         private Timer timer;
         private Stopwatch stopwatch;
 
@@ -62,11 +65,11 @@ namespace ClipboardNotifier.ViewModels
 
                 var item = this.Histories[0];
                 var elapsed = this.stopwatch.Elapsed.TotalSeconds - item.OcceredTime;
-                if (elapsed > 5.0)
+                if (elapsed > DisplaySeconds)
                 {
                     this.RemoveItem(item);
                 }
-                else if (elapsed > 4.75)
+                else if (elapsed > DisplaySeconds - 0.25f)
                 {
                     item.IsDisappearing = true;
                 }
@@ -149,10 +152,16 @@ namespace ClipboardNotifier.ViewModels
             }
             else if (Clipboard.ContainsText())
             {
+                var text = Clipboard.GetText();
+                if (text.Length > TextLengthMax)
+                {
+                    text = text.Substring(0, TextLengthMax) + " ...";
+                }
+
                 var item = new ClipboardHistoryItemViewModel()
                 {
                     ClipboardDataType = ClipboardDataType.Text,
-                    Text = Clipboard.GetText(),
+                    Text = text,
                     OcceredTime = this.stopwatch.Elapsed.TotalSeconds,
                 };
                 this.AddItem(item);
