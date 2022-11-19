@@ -1,0 +1,31 @@
+# NOTE: Requires **VS2019 16.3** or later
+
+# DogParkTaskbar Rules
+# Description: Hand selected set of analyzer rules for use within the DogParkTaskbar.
+
+# Code files
+[*.cs]
+
+#### .NET Coding Rules ####
+
+# Arrange using
+dotnet_separate_import_directive_groups = true
+dotnet_sort_system_directives_first = true
+
+# Settings for this. and Me.
+dotnet_style_qualification_for_event = true:suggestion
+dotnet_style_qualification_for_field = true:suggestion
+dotnet_style_qualification_for_method = true:suggestion
+dotnet_style_qualification_for_property = true:suggestion
+
+### StyleCop Rules ###
+
+# Missing XML comment for publicly visible type or member
+# NOTE: StyleCop checks the same rule with more granuality, so it is safe to turn off this rule.
+dotnet_diagnostic.CS1591.severity = none
+
+# Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = none
+
+# Element parameter documentation should have text
+dotnet_diagnostic.SA1614.severity = none

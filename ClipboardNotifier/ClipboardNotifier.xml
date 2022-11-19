@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClipboardNotifier</name>
+    </assembly>
+    <members>
+        <member name="T:ClipboardNotifier.App">
+            <summary>
+            Interaction logic for App.xaml.
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.App.CreateShell">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.App.RegisterTypes(Prism.Ioc.IContainerRegistry)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.App.OnInitialized">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.App.OnStartup(System.Windows.StartupEventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.App.OnExit(System.Windows.ExitEventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:ClipboardNotifier.Behaviors.WindowMouseTransparentBehavior">
+            <summary>
+            Changes <see cref="T:System.Windows.Window"/>'s mouse transparency of the attached window.
+            </summary>
+        </member>
+        <member name="F:ClipboardNotifier.Behaviors.WindowMouseTransparentBehavior.IsEnabledProperty">
+            <summary>
+            Attached property of IsEnabled.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.Behaviors.WindowMouseTransparentBehavior.IsEnabled">
+            <summary>
+            Gets or sets a value indicating whether the window is mouse transparent.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Behaviors.WindowMouseTransparentBehavior.OnAttached">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.Behaviors.WindowMouseTransparentBehavior.OnDetaching">
+            <inheritdoc/>
+        </member>
+        <member name="T:ClipboardNotifier.Controls.ControlHelper">
+            <summary>
+            Helper class for Controls.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Controls.ControlHelper.GetVisualChildOfType``1(System.Windows.DependencyObject)">
+            <summary>
+            Finds an visual child with the specified type.
+            </summary>
+            <typeparam name="T">the type of the child to find.</typeparam>
+            <param name="obj">the parent object.</param>
+            <returns>the dependency object that found. may be null when no matching object found.</returns>
+        </member>
+        <member name="M:ClipboardNotifier.Controls.ControlHelper.GetParentOfType``1(System.Windows.DependencyObject)">
+            <summary>
+            Find an visual parent with the specified type.
+            </summary>
+            <typeparam name="T">the type of the element to find.</typeparam>
+            <param name="element">child object.</param>
+            <returns>the element that found. may be null when no matching object found.</returns>
+        </member>
+        <member name="T:ClipboardNotifier.Models.ClipboardDataType">
+            <summary>
+            Enum indicating the data type in the clipboard.
+            </summary>
+        </member>
+        <member name="T:ClipboardNotifier.Models.ClipboardMonitor">
+            <summary>
+            Monitors clipboard changes.
+            </summary>
+        </member>
+        <member name="E:ClipboardNotifier.Models.ClipboardMonitor.ClipboardChanged">
+            <summary>
+            Invokes when clipboard changed.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Models.ClipboardMonitor.StartMonitor(System.Windows.Window)">
+            <summary>
+            Start monitoring clipboard.
+            </summary>
+            <param name="window"></param>
+        </member>
+        <member name="T:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel">
+            <summary>
+            ViewModel class of a history item.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel.ClipboardDataType">
+            <summary>
+            Gets or sets the data type of this item.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel.Text">
+            <summary>
+            Gets or sets text data from the clipboard.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel.Image">
+            <summary>
+            Gets or sets image data from the clipboard.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel.OcceredTime">
+            <summary>
+            Gets or sets the event occered time in seconds.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel.IsFirst">
+            <summary>
+            Gets or sets a value indicating whether this item is the first item.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.ClipboardHistoryItemViewModel.IsDisappearing">
+            <summary>
+            Gets or sets a value indicating whether this item is about to disappear.
+            </summary>
+        </member>
+        <member name="T:ClipboardNotifier.ViewModels.MainWindowViewModel">
+            <summary>
+            ViewModel class for MainWindow.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.ViewModels.MainWindowViewModel.#ctor(ClipboardNotifier.Models.ClipboardMonitor)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ClipboardNotifier.ViewModels.MainWindowViewModel"/> class.
+            </summary>
+            <param name="clipboardMonitor"></param>
+        </member>
+        <member name="P:ClipboardNotifier.ViewModels.MainWindowViewModel.Histories">
+            <summary>
+            Gets or sets clipboard histories.
+            </summary>
+        </member>
+        <member name="T:ClipboardNotifier.Views.MainWindow">
+            <summary>
+            Interaction logic for MainWindow.xaml.
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Views.MainWindow.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ClipboardNotifier.Views.MainWindow"/> class.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Views.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:ClipboardNotifier.Windows.Forms.AppNotifyIcon">
+            <summary>
+            Manages application's notify icon.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.Forms.AppNotifyIcon.#ctor(System.Drawing.Icon)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ClipboardNotifier.Windows.Forms.AppNotifyIcon"/> class.
+            </summary>
+            <param name="icon">Icon shown in tray.</param>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.Forms.AppNotifyIcon.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:ClipboardNotifier.Windows.Forms.AppNotifyIcon"/> class.
+            </summary>
+        </member>
+        <member name="E:ClipboardNotifier.Windows.Forms.AppNotifyIcon.Clicked">
+            <summary>
+            Occurs when the user clicks a <see cref="T:ClipboardNotifier.Windows.Forms.AppNotifyIcon"/>.
+            </summary>
+        </member>
+        <member name="E:ClipboardNotifier.Windows.Forms.AppNotifyIcon.Closed">
+            <summary>
+            Occurs when the user selects "Close".
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.Windows.Forms.AppNotifyIcon.Text">
+            <summary>
+            Gets or sets the ToolTip text displayed when the mouse pointer rests on a notification area icon.
+            </summary>
+        </member>
+        <member name="P:ClipboardNotifier.Windows.Forms.AppNotifyIcon.IsVisible">
+            <summary>
+            Gets or sets a value indicating whether the icon is visible in the notification area of the taskbar.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.Forms.AppNotifyIcon.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.Forms.AppNotifyIcon.Dispose(System.Boolean)">
+            <summary>
+            Implementation of Dispose pattern.
+            </summary>
+            <param name="disposing">Dispose managed objects.</param>
+        </member>
+        <member name="T:ClipboardNotifier.Windows.NativeMethods">
+            <summary>
+            Win32 API.
+            </summary>
+        </member>
+        <member name="T:ClipboardNotifier.Windows.WindowHelper">
+            <summary>
+            Helper methods for window class.
+            </summary>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.WindowHelper.ActivateWindow(System.Windows.Window)">
+            <summary>
+            Show window to foreground.
+            </summary>
+            <param name="window"></param>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.WindowHelper.IsTransparent(System.Windows.Window)">
+            <summary>
+            Gets mouse transparency of a window.
+            </summary>
+            <param name="window"></param>
+            <returns>true if transparent.</returns>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.WindowHelper.SetTransparent(System.Windows.Window)">
+            <summary>
+            Sets mouse transparency to a window.
+            </summary>
+            <param name="window"></param>
+        </member>
+        <member name="M:ClipboardNotifier.Windows.WindowHelper.UnsetTransprent(System.Windows.Window)">
+            <summary>
+            Unsets mouse transparency from a window.
+            </summary>
+            <param name="window"></param>
+        </member>
+    </members>
+</doc>

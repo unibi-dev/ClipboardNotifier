@@ -1,0 +1,171 @@
+﻿<Window x:Class="ClipboardNotifier.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:myBehaviors="clr-namespace:ClipboardNotifier.Behaviors"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:m="clr-namespace:ClipboardNotifier.Models"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        AllowsTransparency="True"
+        ShowInTaskbar="False"
+        Topmost="True"
+        WindowStyle="None"
+        Background="Transparent"
+        SizeToContent="WidthAndHeight"
+        Title="ClipboardNotifier"
+        Icon="/ClipboardNotifier;component/Resources/icon32.ico"
+        Height="350"
+        Width="525"
+        Top="16"
+        Left="16">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <b:Interaction.Behaviors>
+        <myBehaviors:WindowMouseTransparentBehavior IsEnabled="True" />
+    </b:Interaction.Behaviors>
+
+    <ItemsControl ItemsSource="{Binding Histories}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <DataTemplate.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard x:Name="EnterElement">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25">
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <DataTrigger Binding="{Binding IsDisappearing}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <StopStoryboard BeginStoryboardName="EnterElement" />
+                            <BeginStoryboard x:Name="ExitElement">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.25">
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+
+                <Border Background="#A0202020"
+                        CornerRadius="4"
+                        Margin="0,0,0,1">
+                    <StackPanel Orientation="Vertical">
+                        <Border Background="#40000000" CornerRadius="4,4,0,0">
+                            <TextBlock Text="Clipboard Notifier"
+                                       Visibility="{Binding IsFirst, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Foreground="Gainsboro"
+                                       FontSize="8"
+                                       Margin="6,3" />
+                        </Border>
+                        <StackPanel Orientation="Vertical" Margin="8,6">
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ClipboardDataType}" Value="{x:Static m:ClipboardDataType.Text}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <fa:FontAwesome Icon="Font"
+                                                FontSize="9"
+                                                Foreground="White"
+                                                Margin="0,1,5,1" />
+                                <TextBlock Text="Text copied:"
+                                            Foreground="Gainsboro"
+                                            FontSize="9" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Text}"
+                                       Foreground="White"
+                                       FontSize="10"
+                                       MaxWidth="480"
+                                       Margin="12,2,8,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="8,6">
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ClipboardDataType}" Value="{x:Static m:ClipboardDataType.Image}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <fa:FontAwesome Icon="PictureOutline"
+                                                FontSize="9"
+                                                Foreground="White"
+                                                Margin="0,1,5,1" />
+                                <TextBlock Text="Image copied:"
+                                           Foreground="Gainsboro"
+                                           FontSize="9" />
+                            </StackPanel>
+                            <Image Source="{Binding Image}"
+                                    MaxWidth="480"
+                                    MaxHeight="120"
+                                    Stretch="Uniform"
+                                    StretchDirection="DownOnly"
+                                    Margin="12,2,8,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="8,6">
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ClipboardDataType}" Value="{x:Static m:ClipboardDataType.File}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <fa:FontAwesome Icon="FileOutline"
+                                                FontSize="9"
+                                                Foreground="White"
+                                                Margin="0,1,5,1" />
+                                <TextBlock Text="File copied:"
+                                           Foreground="Gainsboro"
+                                           FontSize="9" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Text}"
+                                       Foreground="White"
+                                       FontSize="10"
+                                       MaxWidth="480"
+                                       Margin="8,2,8,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="8,6">
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ClipboardDataType}" Value="{x:Static m:ClipboardDataType.Audio}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <fa:FontAwesome Icon="FileOutline"
+                                                FontSize="9"
+                                                Foreground="White"
+                                                Margin="0,1,5,1" />
+                                <TextBlock Text="Audio copied."
+                                           Foreground="Gainsboro"
+                                           FontSize="9" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</Window>
