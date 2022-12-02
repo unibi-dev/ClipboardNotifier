@@ -9,9 +9,12 @@ namespace ClipboardNotifier.Behaviors
 {
     using System;
     using System.Windows;
+    using System.Windows.Input;
+    using System.Windows.Media;
 
     using ClipboardNotifier.Controls;
     using ClipboardNotifier.Windows;
+    using ClipboardNotifier.Windows.NativeMethods;
 
     using Microsoft.Xaml.Behaviors;
 
@@ -30,6 +33,17 @@ namespace ClipboardNotifier.Behaviors
                 typeof(WindowMouseTransparentBehavior),
                 new PropertyMetadata(false, OnIsEnabledChanged));
 
+        /// <summary>
+        /// Attached property of IsMouseMover.
+        /// </summary>
+        public static readonly DependencyProperty IsMouseOverProperty =
+            DependencyProperty.Register(
+                nameof(IsMouseOver),
+                typeof(bool),
+                typeof(WindowMouseTransparentBehavior),
+                new PropertyMetadata(false));
+
+        private MouseHook mouseHook;
         private bool transparent;
 
         /// <summary>
@@ -41,6 +55,15 @@ namespace ClipboardNotifier.Behaviors
             set => this.SetValue(IsEnabledProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the mouse is over associated object.
+        /// </summary>
+        public bool IsMouseOver
+        {
+            get => (bool)this.GetValue(IsMouseOverProperty);
+            set => this.SetValue(IsMouseOverProperty, value);
+        }
+
         /// <inheritdoc/>
         protected override void OnAttached()
         {
@@ -50,20 +73,24 @@ namespace ClipboardNotifier.Behaviors
             if (window != null)
             {
                 this.transparent = WindowHelper.IsTransparent(window);
-                if (this.transparent != this.IsEnabled)
-                {
-                    this.UpdateTransparency(this.IsEnabled);
-                }
             }
             else
             {
                 this.AssociatedObject.Loaded += this.AssociatedObject_Loaded;
             }
+
+            this.mouseHook = new MouseHook();
+            var targetMessage = WindowsHook.MouseMessages.WM_MOUSEMOVE;
+            this.mouseHook.SetHook(targetMessage, this.OnMouseMove);
         }
 
         /// <inheritdoc/>
         protected override void OnDetaching()
         {
+            this.mouseHook?.UnsetHook();
+
+            this.IsMouseOver = false;
+
             base.OnDetaching();
         }
 
@@ -73,8 +100,48 @@ namespace ClipboardNotifier.Behaviors
             if (behavior != null)
             {
                 var enable = (bool)ev.NewValue;
-                behavior.UpdateTransparency(enable);
+                if (enable)
+                {
+                    if (behavior.AssociatedObject != null)
+                    {
+                        var cursorPos = behavior.AssociatedObject.PointToScreen(Mouse.GetPosition(behavior.AssociatedObject));
+                        behavior.OnMouseMove(cursorPos);
+                    }
+                }
+                else
+                {
+                    behavior.UpdateTransparency(false);
+                }
             }
+        }
+
+        private void OnMouseMove(WindowsHook.MSLLHOOKSTRUCT hookStruct)
+        {
+            if (!this.IsEnabled)
+            {
+                return;
+            }
+
+            this.OnMouseMove(new Point(hookStruct.pt.x, hookStruct.pt.y));
+        }
+
+        private void OnMouseMove(Point mouse)
+        {
+            var window = this.FindWindow();
+            if (window == null || window.IsVisible == false)
+            {
+                this.IsMouseOver = false;
+                return;
+            }
+
+            var screenPos = window.PointToScreen(new Point(0, 0));
+            var pos = new Point(mouse.X - screenPos.X, mouse.Y - screenPos.Y);
+            var windowRect = new Rect(0, 0, window.ActualWidth, window.ActualHeight);
+            var element = window.InputHitTest(pos) as Visual;
+            var inside = windowRect.Contains(pos) && element != null && this.AssociatedObject.IsAncestorOf(element);
+            this.IsMouseOver = inside;
+
+            this.UpdateTransparency(inside);
         }
 
         private void UpdateTransparency(bool transparent)

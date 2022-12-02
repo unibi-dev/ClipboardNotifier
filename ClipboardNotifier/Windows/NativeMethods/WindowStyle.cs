@@ -1,19 +1,19 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="NativeMethods.cs" company="unibi.dev">
+// <copyright file="WindowStyle.cs" company="unibi.dev">
 // Copyright (c) unibi.dev. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace ClipboardNotifier.Windows
+namespace ClipboardNotifier.Windows.NativeMethods
 {
     using System;
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// Win32 API.
+    /// GetWindowLong/SetWindowLong.
     /// </summary>
-    internal class NativeMethods
+    internal static class WindowStyle
     {
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable SA1310 // Field names should not contain underscore
@@ -30,45 +30,22 @@ namespace ClipboardNotifier.Windows
         public const int SW_SHOWNA = 8;
         public const int SW_RESTORE = 9;
         public const int SW_SHOWDEFAULT = 10;
-        public const int SWP_NOSIZE = 0x0001;
-        public const int SWP_NOMOVE = 0x0002;
-        public const int SWP_NOACTIVATE = 0x0010;
-        public const int SWP_SHOWWINDOW = 0x0040;
-        public const int HWND_TOPMOST = -1;
-        public const int HWND_NOTOPMOST = -2;
-
-        public const int WM_CLIPBOARDUPDATE = 0x031D;
-        public static readonly IntPtr HWND_MESSAGE = new IntPtr(-3);
 #pragma warning restore SA1310 // Field names should not contain underscore
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll")]
         public static extern int GetWindowLong(IntPtr hwnd, int index);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hwnd);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll")]
         public static extern bool ShowWindowAsync(IntPtr hwnd, int nCmdShow);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll")]
         public static extern bool IsIconic(IntPtr hwnd);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetWindowPos(IntPtr hwnd, int hwndInsertAfter, int x, int y, int cx, int cy, int uFlags);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool AddClipboardFormatListener(IntPtr hwnd);
-
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
 #pragma warning restore SA1600 // Elements should be documented
     }
 }

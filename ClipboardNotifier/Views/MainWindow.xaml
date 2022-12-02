@@ -24,7 +24,7 @@
     </Window.Resources>
 
     <b:Interaction.Behaviors>
-        <myBehaviors:WindowMouseTransparentBehavior IsEnabled="True" />
+        <myBehaviors:WindowMouseTransparentBehavior IsEnabled="True" IsMouseOver="{Binding IsMouseOver, Mode=OneWayToSource}" />
     </b:Interaction.Behaviors>
 
     <ItemsControl ItemsSource="{Binding Histories}">
@@ -34,30 +34,56 @@
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                         <BeginStoryboard x:Name="EnterElement">
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25">
-                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0"
+                                                 To="1"
+                                                 Duration="0:0:0.25" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>
+                    <DataTrigger Binding="{Binding DataContext.IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <StopStoryboard BeginStoryboardName="EnterElement" />
+                            <BeginStoryboard x:Name="MouseEnterElement">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="1"
+                                                     To="0"
+                                                     Duration="0:0:0.25" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard x:Name="MouseExitElement">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0"
+                                                 To="1"
+                                                 Duration="0:0:0.25" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding IsDisappearing}" Value="True">
                         <DataTrigger.EnterActions>
                             <StopStoryboard BeginStoryboardName="EnterElement" />
                             <BeginStoryboard x:Name="ExitElement">
                                 <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.25">
-                                    </DoubleAnimation>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="1"
+                                                     To="0"
+                                                     Duration="0:0:0.25" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </DataTrigger.EnterActions>
                     </DataTrigger>
                 </DataTemplate.Triggers>
 
-                <Border Background="#A0202020"
-                        CornerRadius="4"
-                        Margin="0,0,0,1">
+                <Border Background="#A0202020" CornerRadius="4" Margin="0,0,0,1">
                     <StackPanel Orientation="Vertical">
                         <Border Background="#40000000" CornerRadius="4,4,0,0">
-                            <TextBlock Text="Clipboard Notifier"
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="Clipboard Notifier"
                                        Visibility="{Binding IsFirst, Converter={StaticResource BooleanToVisibilityConverter}}"
                                        Foreground="Gainsboro"
                                        FontSize="8"
@@ -79,15 +105,13 @@
                                                 FontSize="9"
                                                 Foreground="White"
                                                 Margin="0,1,5,1" />
-                                <TextBlock Text="Text copied:"
-                                            Foreground="Gainsboro"
-                                            FontSize="9" />
+                                <TextBlock Text="Text copied:" Foreground="Gainsboro" FontSize="9" />
                             </StackPanel>
                             <TextBlock Text="{Binding Text}"
                                        Foreground="White"
                                        FontSize="10"
                                        MaxWidth="480"
-                                       Margin="12,2,8,0"/>
+                                       Margin="12,2,8,0" />
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="8,6">
                             <StackPanel.Style>
@@ -105,16 +129,14 @@
                                                 FontSize="9"
                                                 Foreground="White"
                                                 Margin="0,1,5,1" />
-                                <TextBlock Text="Image copied:"
-                                           Foreground="Gainsboro"
-                                           FontSize="9" />
+                                <TextBlock Text="Image copied:" Foreground="Gainsboro" FontSize="9" />
                             </StackPanel>
                             <Image Source="{Binding Image}"
-                                    MaxWidth="480"
-                                    MaxHeight="120"
-                                    Stretch="Uniform"
-                                    StretchDirection="DownOnly"
-                                    Margin="12,2,8,0" />
+                                   MaxWidth="480"
+                                   MaxHeight="120"
+                                   Stretch="Uniform"
+                                   StretchDirection="DownOnly"
+                                   Margin="12,2,8,0" />
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="8,6">
                             <StackPanel.Style>
@@ -132,9 +154,7 @@
                                                 FontSize="9"
                                                 Foreground="White"
                                                 Margin="0,1,5,1" />
-                                <TextBlock Text="File copied:"
-                                           Foreground="Gainsboro"
-                                           FontSize="9" />
+                                <TextBlock Text="File copied:" Foreground="Gainsboro" FontSize="9" />
                             </StackPanel>
                             <TextBlock Text="{Binding Text}"
                                        Foreground="White"
@@ -158,9 +178,7 @@
                                                 FontSize="9"
                                                 Foreground="White"
                                                 Margin="0,1,5,1" />
-                                <TextBlock Text="Audio copied."
-                                           Foreground="Gainsboro"
-                                           FontSize="9" />
+                                <TextBlock Text="Audio copied." Foreground="Gainsboro" FontSize="9" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>

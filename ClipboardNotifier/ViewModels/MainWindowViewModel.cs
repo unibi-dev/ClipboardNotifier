@@ -17,7 +17,7 @@ namespace ClipboardNotifier.ViewModels
     using System.Windows.Media.Imaging;
 
     using ClipboardNotifier.Models;
-    using ClipboardNotifier.Windows;
+    using ClipboardNotifier.Windows.NativeMethods;
 
     using Prism.Mvvm;
 
@@ -28,6 +28,8 @@ namespace ClipboardNotifier.ViewModels
     {
         private const int TextLengthMax = 500;
         private const float DisplaySeconds = 6.0f;
+
+        private bool isMouseOver;
 
         private Timer timer;
         private Stopwatch stopwatch;
@@ -53,6 +55,15 @@ namespace ClipboardNotifier.ViewModels
         /// </summary>
         public ObservableCollection<ClipboardHistoryItemViewModel> Histories { get; set; }
             = new ObservableCollection<ClipboardHistoryItemViewModel>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a mouse is over this window.
+        /// </summary>
+        public bool IsMouseOver
+        {
+            get => this.isMouseOver;
+            set => this.SetProperty(ref this.isMouseOver, value);
+        }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs ev)
         {
@@ -126,7 +137,7 @@ namespace ClipboardNotifier.ViewModels
                         }
                         finally
                         {
-                            NativeMethods.DeleteObject(hBitmap);
+                            GDIMethods.DeleteObject(hBitmap);
                         }
                     }
                 }

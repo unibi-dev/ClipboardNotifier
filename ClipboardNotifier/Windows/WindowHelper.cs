@@ -25,12 +25,12 @@ namespace ClipboardNotifier.Windows
             var hwnd = new WindowInteropHelper(window).EnsureHandle();
 
             // restore minimized window
-            if (NativeMethods.IsIconic(hwnd))
+            if (NativeMethods.WindowStyle.IsIconic(hwnd))
             {
-                NativeMethods.ShowWindowAsync(hwnd, NativeMethods.SW_RESTORE);
+                NativeMethods.WindowStyle.ShowWindowAsync(hwnd, NativeMethods.WindowStyle.SW_RESTORE);
             }
 
-            NativeMethods.SetForegroundWindow(hwnd);
+            NativeMethods.WindowStyle.SetForegroundWindow(hwnd);
         }
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace ClipboardNotifier.Windows
         public static bool IsTransparent(Window window)
         {
             var hwnd = new WindowInteropHelper(window).EnsureHandle();
-            var style = NativeMethods.GetWindowLong(hwnd, NativeMethods.GWL_EXSTYLE);
-            return (style & NativeMethods.WS_EX_TRANSPARENT) != 0;
+            var style = NativeMethods.WindowStyle.GetWindowLong(hwnd, NativeMethods.WindowStyle.GWL_EXSTYLE);
+            return (style & NativeMethods.WindowStyle.WS_EX_TRANSPARENT) != 0;
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace ClipboardNotifier.Windows
         public static void SetTransparent(Window window)
         {
             var hwnd = new WindowInteropHelper(window).EnsureHandle();
-            var style = NativeMethods.GetWindowLong(hwnd, NativeMethods.GWL_EXSTYLE);
-            style |= NativeMethods.WS_EX_TRANSPARENT;
-            NativeMethods.SetWindowLong(hwnd, NativeMethods.GWL_EXSTYLE, style);
+            var style = NativeMethods.WindowStyle.GetWindowLong(hwnd, NativeMethods.WindowStyle.GWL_EXSTYLE);
+            style |= NativeMethods.WindowStyle.WS_EX_TRANSPARENT;
+            NativeMethods.WindowStyle.SetWindowLong(hwnd, NativeMethods.WindowStyle.GWL_EXSTYLE, style);
         }
 
         /// <summary>
@@ -64,9 +64,9 @@ namespace ClipboardNotifier.Windows
         public static void UnsetTransprent(Window window)
         {
             var hwnd = new WindowInteropHelper(window).EnsureHandle();
-            var style = NativeMethods.GetWindowLong(hwnd, NativeMethods.GWL_EXSTYLE);
-            style &= ~NativeMethods.WS_EX_TRANSPARENT;
-            NativeMethods.SetWindowLong(hwnd, NativeMethods.GWL_EXSTYLE, style);
+            var style = NativeMethods.WindowStyle.GetWindowLong(hwnd, NativeMethods.WindowStyle.GWL_EXSTYLE);
+            style &= ~NativeMethods.WindowStyle.WS_EX_TRANSPARENT;
+            NativeMethods.WindowStyle.SetWindowLong(hwnd, NativeMethods.WindowStyle.GWL_EXSTYLE, style);
         }
     }
 }
