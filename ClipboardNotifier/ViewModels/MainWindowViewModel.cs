@@ -38,7 +38,7 @@ namespace ClipboardNotifier.ViewModels
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
         /// <param name="clipboardMonitor"></param>
-        public MainWindowViewModel(ClipboardMonitor clipboardMonitor)
+        public MainWindowViewModel(ClipboardWatcher clipboardMonitor)
         {
             this.stopwatch = new Stopwatch();
             this.stopwatch.Start();

@@ -39,7 +39,7 @@ namespace ClipboardNotifier
         /// <inheritdoc/>
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton<ClipboardMonitor>();
+            containerRegistry.RegisterSingleton<ClipboardWatcher>();
         }
 
         /// <inheritdoc/>
@@ -47,8 +47,8 @@ namespace ClipboardNotifier
         {
             base.OnInitialized();
 
-            var clipboardMonitor = this.Container.Resolve<ClipboardMonitor>();
-            clipboardMonitor.StartMonitor(this.MainWindow);
+            var clipboardWatcher = this.Container.Resolve<ClipboardWatcher>();
+            clipboardWatcher.Start(this.MainWindow);
         }
 
         /// <inheritdoc/>
@@ -75,6 +75,9 @@ namespace ClipboardNotifier
         /// <inheritdoc/>
         protected override void OnExit(ExitEventArgs ev)
         {
+            var clipboardWatcher = this.Container.Resolve<ClipboardWatcher>();
+            clipboardWatcher.Stop();
+
             this.notifyIcon.Dispose();
 
             base.OnExit(ev);

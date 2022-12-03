@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ClipboardMonitor.cs" company="unibi.dev">
+// <copyright file="ClipboardWatcher.cs" company="unibi.dev">
 // Copyright (c) unibi.dev. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -11,15 +11,17 @@ namespace ClipboardNotifier.Models
     using System.Diagnostics;
     using System.Windows;
     using System.Windows.Interop;
-    using ClipboardNotifier.Windows;
+
+    using ClipboardNotifier.Windows.NativeMethods;
 
     /// <summary>
     /// Monitors clipboard changes.
     /// </summary>
-    public class ClipboardMonitor
+    public class ClipboardWatcher
     {
         private static readonly IntPtr WndProcSuccess = IntPtr.Zero;
 
+        private IntPtr windowHandle;
         private Stopwatch stopwatch = new Stopwatch();
 
         /// <summary>
@@ -33,10 +35,10 @@ namespace ClipboardNotifier.Models
         public double IntervalMilliseconds { get; set; } = 100;
 
         /// <summary>
-        /// Start monitoring clipboard.
+        /// Starts monitoring clipboard.
         /// </summary>
         /// <param name="window"></param>
-        public void StartMonitor(Window window)
+        public void Start(Window window)
         {
             var source = PresentationSource.FromVisual(window) as HwndSource;
             if (source == null)
@@ -47,10 +49,22 @@ namespace ClipboardNotifier.Models
             source.AddHook(this.WndProc);
 
             // get window handle for interop
-            var windowHandle = new WindowInteropHelper(window).Handle;
+            this.windowHandle = new WindowInteropHelper(window).Handle;
 
             // register for clipboard events
-            NativeMethods.AddClipboardFormatListener(windowHandle);
+            ClipboardMethods.AddClipboardFormatListener(this.windowHandle);
+        }
+
+        /// <summary>
+        /// Stops monitoring clipboard.
+        /// </summary>
+        public void Stop()
+        {
+            if (this.windowHandle != IntPtr.Zero)
+            {
+                ClipboardMethods.RemoveClipboardFormatListener(this.windowHandle);
+                this.windowHandle = IntPtr.Zero;
+            }
         }
 
         private void OnClipboardChanged()
@@ -60,7 +74,7 @@ namespace ClipboardNotifier.Models
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == NativeMethods.WM_CLIPBOARDUPDATE)
+            if (msg == ClipboardMethods.WM_CLIPBOARDUPDATE)
             {
                 // NOTE: some applications open/close clipboard multiple times for one action
                 if (!this.stopwatch.IsRunning || this.stopwatch.ElapsedMilliseconds >= this.IntervalMilliseconds)
