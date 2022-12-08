@@ -18,5 +18,6 @@ namespace ClipboardNotifier.Models
         Image,
         File,
         Audio,
+        Others,
     }
 }

@@ -177,6 +177,15 @@ namespace ClipboardNotifier.ViewModels
                 };
                 this.AddItem(item);
             }
+            else
+            {
+                var item = new ClipboardHistoryItemViewModel()
+                {
+                    ClipboardDataType = ClipboardDataType.Others,
+                    OcceredTime = this.stopwatch.Elapsed.TotalSeconds,
+                };
+                this.AddItem(item);
+            }
         }
 
         private void AddItem(ClipboardHistoryItemViewModel item)
