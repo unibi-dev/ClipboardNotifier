@@ -65,6 +65,18 @@ namespace ClipboardNotifier.ViewModels
             set => this.SetProperty(ref this.isMouseOver, value);
         }
 
+        private static bool IsClipboardEmpty()
+        {
+            var content = Clipboard.GetDataObject();
+            if (content == null)
+            {
+                return true;
+            }
+
+            var formats = content.GetFormats();
+            return formats.Length == 0;
+        }
+
         private void Timer_Elapsed(object sender, ElapsedEventArgs ev)
         {
             while (true)
@@ -177,7 +189,7 @@ namespace ClipboardNotifier.ViewModels
                 };
                 this.AddItem(item);
             }
-            else
+            else if (!IsClipboardEmpty())
             {
                 var item = new ClipboardHistoryItemViewModel()
                 {
