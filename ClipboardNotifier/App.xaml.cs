@@ -13,13 +13,10 @@ namespace ClipboardNotifier
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using System.Windows.Media.Media3D;
 
     using ClipboardNotifier.Models;
     using ClipboardNotifier.Views;
     using ClipboardNotifier.Windows.Forms;
-
-    using FontAwesome.WPF;
 
     using Prism.Ioc;
 
@@ -67,9 +64,37 @@ namespace ClipboardNotifier
             var icon = new Icon(iconStream);
 
             this.notifyIcon = new AppNotifyIcon(icon);
-            this.notifyIcon.Closed += this.NotifyIcon_Closed;
             this.notifyIcon.Text = "Clipboard Notifier";
             this.notifyIcon.IsVisible = true;
+
+            var startupItem = this.notifyIcon.AddItem("Start at login");
+            startupItem.CheckOnClick = true;
+            this.notifyIcon.AddSeparator();
+            this.notifyIcon.AddItem("Close", this.Shutdown);
+
+            this.notifyIcon.Opened += (s_, e_) =>
+            {
+                startupItem.Checked = IsStartupEnabled();
+            };
+
+            startupItem.Click += (s_, e_) =>
+            {
+                var enabled = startupItem.Checked;
+                if (enabled)
+                {
+                    if (!IsStartupEnabled())
+                    {
+                        CreateStartupShortcut();
+                    }
+                }
+                else
+                {
+                    if (IsStartupEnabled())
+                    {
+                        DeleteStartupShortcut();
+                    }
+                }
+            };
         }
 
         /// <inheritdoc/>
@@ -81,6 +106,37 @@ namespace ClipboardNotifier
             this.notifyIcon.Dispose();
 
             base.OnExit(ev);
+        }
+
+        private static string GetStartupLinkPath()
+        {
+            var startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            return System.IO.Path.Combine(startupDir, "ClipboardNotifier.exe.lnk");
+        }
+
+        private static bool IsStartupEnabled()
+        {
+            var path = GetStartupLinkPath();
+            return System.IO.File.Exists(path);
+        }
+
+        private static void CreateStartupShortcut()
+        {
+            var path = GetStartupLinkPath();
+            var shell = new IWshRuntimeLibrary.WshShell();
+            var shortcut = (IWshRuntimeLibrary.WshShortcut)shell.CreateShortcut(path);
+            shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            shortcut.IconLocation = System.Reflection.Assembly.GetEntryAssembly().Location + ",0";
+            shortcut.Save();
+
+            Marshal.FinalReleaseComObject(shortcut);
+            Marshal.FinalReleaseComObject(shell);
+        }
+
+        private static void DeleteStartupShortcut()
+        {
+            var path = GetStartupLinkPath();
+            System.IO.File.Delete(path);
         }
 
         private static BitmapSource ConvertImageSourceToBitmapSource(ImageSource imageSource)
@@ -122,11 +178,6 @@ namespace ClipboardNotifier
                     Marshal.FreeHGlobal(ptr);
                 }
             }
-        }
-
-        private void NotifyIcon_Closed(object sender, EventArgs ev)
-        {
-            this.Shutdown();
         }
     }
 }

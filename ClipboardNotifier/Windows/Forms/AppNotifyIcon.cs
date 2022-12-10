@@ -8,6 +8,7 @@
 namespace ClipboardNotifier.Windows.Forms
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.Windows.Forms;
 
@@ -17,7 +18,8 @@ namespace ClipboardNotifier.Windows.Forms
     public class AppNotifyIcon : IDisposable
     {
         private NotifyIcon notifyIcon;
-        private ToolStripMenuItem closeItem;
+        private ContextMenuStrip contextMenu;
+        private List<ToolStripItem> items;
 
         private bool disposed;
 
@@ -32,12 +34,10 @@ namespace ClipboardNotifier.Windows.Forms
                 Icon = icon,
             };
 
-            var menu = new ContextMenuStrip();
+            this.contextMenu = new ContextMenuStrip();
+            this.notifyIcon.ContextMenuStrip = this.contextMenu;
 
-            this.closeItem = new ToolStripMenuItem("Close");
-            menu.Items.Add(this.closeItem);
-
-            this.notifyIcon.ContextMenuStrip = menu;
+            this.items = new List<ToolStripItem>();
         }
 
         /// <summary>
@@ -53,17 +53,17 @@ namespace ClipboardNotifier.Windows.Forms
         /// </summary>
         public event EventHandler Clicked
         {
-            add { this.notifyIcon.Click += value; }
-            remove { this.notifyIcon.Click -= value; }
+            add => this.notifyIcon.Click += value;
+            remove => this.notifyIcon.Click -= value;
         }
 
         /// <summary>
-        /// Occurs when the user selects "Close".
+        /// Occurs when the user opens the context menu.
         /// </summary>
-        public event EventHandler Closed
+        public event EventHandler Opened
         {
-            add { this.closeItem.Click += value; }
-            remove { this.closeItem.Click -= value; }
+            add => this.contextMenu.Opened += value;
+            remove => this.contextMenu.Opened -= value;
         }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace ClipboardNotifier.Windows.Forms
         /// </summary>
         public string Text
         {
-            get { return this.notifyIcon.Text; }
-            set { this.notifyIcon.Text = value; }
+            get => this.notifyIcon.Text;
+            set => this.notifyIcon.Text = value;
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace ClipboardNotifier.Windows.Forms
         /// </summary>
         public bool IsVisible
         {
-            get { return this.notifyIcon.Visible; }
-            set { this.notifyIcon.Visible = value; }
+            get => this.notifyIcon.Visible;
+            set => this.notifyIcon.Visible = value;
         }
 
         /// <inheritdoc/>
@@ -90,6 +90,38 @@ namespace ClipboardNotifier.Windows.Forms
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Adds a item to context menu.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="action"></param>
+        /// <returns>added item.</returns>
+        public ToolStripMenuItem AddItem(string text, Action action = null)
+        {
+            var item = new ToolStripMenuItem(text);
+            if (action != null)
+            {
+                item.Click += (s_, e_) => action.Invoke();
+            }
+
+            this.items.Add(item);
+            this.contextMenu.Items.Add(item);
+
+            return item;
+        }
+
+        /// <summary>
+        /// Adds a separator to context menu.
+        /// </summary>
+        /// <returns>added item.</returns>
+        public ToolStripSeparator AddSeparator()
+        {
+            var item = new ToolStripSeparator();
+            this.contextMenu.Items.Add(item);
+
+            return item;
         }
 
         /// <summary>
@@ -107,7 +139,11 @@ namespace ClipboardNotifier.Windows.Forms
             {
                 // Free any other managed objects here.
                 this.notifyIcon.Dispose();
-                this.closeItem.Dispose();
+
+                foreach (var item in this.items)
+                {
+                    item.Dispose();
+                }
             }
 
             // Free any unmanaged objects here.
