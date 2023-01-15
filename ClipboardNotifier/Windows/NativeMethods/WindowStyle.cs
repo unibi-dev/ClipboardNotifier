@@ -30,6 +30,12 @@ namespace ClipboardNotifier.Windows.NativeMethods
         public const int SW_SHOWNA = 8;
         public const int SW_RESTORE = 9;
         public const int SW_SHOWDEFAULT = 10;
+        public const int SWP_NOSIZE = 0x0001;
+        public const int SWP_NOMOVE = 0x0002;
+        public const int SWP_NOACTIVATE = 0x0010;
+        public const int SWP_SHOWWINDOW = 0x0040;
+        public const int HWND_TOPMOST = -1;
+        public const int HWND_NOTOPMOST = -2;
 #pragma warning restore SA1310 // Field names should not contain underscore
 
         [DllImport("user32.dll")]
@@ -46,6 +52,10 @@ namespace ClipboardNotifier.Windows.NativeMethods
 
         [DllImport("user32.dll")]
         public static extern bool IsIconic(IntPtr hwnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetWindowPos(IntPtr hwnd, int hwndInsertAfter, int x, int y, int cx, int cy, int uFlags);
 #pragma warning restore SA1600 // Elements should be documented
     }
 }

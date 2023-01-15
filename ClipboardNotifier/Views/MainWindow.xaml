@@ -25,6 +25,7 @@
 
     <b:Interaction.Behaviors>
         <myBehaviors:WindowMouseTransparentBehavior IsEnabled="True" IsMouseOver="{Binding IsMouseOver, Mode=OneWayToSource}" />
+        <myBehaviors:KeepWindowTopmostBehavior Interval="2.0" />
     </b:Interaction.Behaviors>
 
     <ItemsControl ItemsSource="{Binding Histories}">
